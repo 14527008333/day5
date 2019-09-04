@@ -21,4 +21,8 @@ public class DemoController {
 		System.out.println("这是什么玩意");
 	}
 	
+	public void show_b() {
+		System.out.println("asdasdasdasdas");
+	}
+	
 }
