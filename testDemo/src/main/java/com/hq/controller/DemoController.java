@@ -19,6 +19,7 @@ public class DemoController {
 
 	public void show_bai() {
 		System.out.println("这是什么玩意");
+		System.out.println("1111");
 	}
 	
 }
