@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.dao.MyDao">
+	<select id="getlist" resultType="Map">
+		SELECT dy.*,GROUP_CONCAT(fl.fname) ffname from dy 
+		LEFT JOIN zhong on dy.did=zhong.did 
+		LEFT JOIN fl on fl.fid=zhong.fid 
+		<where>
+			<if test="mh!=null and mh!=''">
+				dy.dname like concat('%',#{mh},'%')
+			</if>
+		</where>
+		GROUP BY dy.did
+	</select>
+	
+	<select id="duoxuan" resultType="com.bw.bean.Fl">
+		SELECT * from fl
+	</select>
+	<insert id="adddy" useGeneratedKeys="true">
+		INSERT INTO `dy` (`dname`, `jqjs`, `writer`, `fxdate`) VALUES (#{dname}, #{jqjs},#{writer},#{fxdate})
+		<selectKey keyProperty="did" resultType="int">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="addzhong">
+		INSERT INTO `zhong` (`did`, `fid`) VALUES
+		<foreach collection="fids" item="fid" separator=",">
+		(#{did}, #{fid})
+		</foreach>
+	</insert>	
+	<delete id="deletedy">
+		delete from dy where did in (${value})
+	</delete>
+	<delete id="deletezhong">
+		delete from zhong where did in (${value})
+	</delete>
+	<select id="huixian" resultType="Map">
+		SELECT dy.*,GROUP_CONCAT(fl.fid) ffname from dy 
+		LEFT JOIN zhong on dy.did=zhong.did 
+		LEFT JOIN fl on fl.fid=zhong.fid where dy.did = #{did} GROUP BY dy.did
+	</select>
+	<update id="updatedy">
+		UPDATE `dy` SET `dname`=#{dname}, `jqjs`=#{jqjs}, `writer`=#{writer}, `fxdate`=#{fxdate} WHERE (`did`=#{did})
+	</update>
+</mapper>
